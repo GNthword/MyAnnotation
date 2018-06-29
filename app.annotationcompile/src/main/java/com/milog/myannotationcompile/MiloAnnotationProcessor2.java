@@ -24,6 +24,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
 
 /**
  * Created by miloway on 2018/6/21.
@@ -61,33 +62,10 @@ public class MiloAnnotationProcessor2 extends AbstractProcessor{
         builderJava();
         if (g) {
             g = false;
-            for (TypeElement element : annotations) {
-                if (element.getQualifiedName().toString().equals(MiloConfig3.class.getCanonicalName())) {
-                    // main method
-                    MethodSpec main = MethodSpec.methodBuilder("main")
-                            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                            .returns(void.class)
-                            .addParameter(String[].class, "args")
-                            .addStatement("$T.out.println($S)", System.class, "Hello, JavaPoet!")
-                            .build();
-                    // HelloWorld class
-                    TypeSpec helloWorld = TypeSpec.classBuilder("HelloWorld")
-                            .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                            .addMethod(main)
-                            .build();
+            JavaPoetTemp.generateHelloWorld(annotations, filer);
+            JavaPoetTemp.genMyMyLinearLayout(filer);
+            JavaPoetTemp.modifyTheFile(annotations, messager);
 
-                    try {
-                        // build com.example.HelloWorld.java
-                        JavaFile javaFile = JavaFile.builder("com.example", helloWorld)
-                                .addFileComment(" This codes are generated automatically. Do not modify!")
-                                .build();
-                        // write to file
-                        javaFile.writeTo(filer);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
         }
 
         return true;

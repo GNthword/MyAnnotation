@@ -37,12 +37,17 @@ public class MyLinearLayout extends LinearLayout {
         tvDeal = findViewById(R.id.tv_deal);
 
         init();
+        test();
     }
 
     private void init() {
         Class<?> class1 = MiloConfig.class;
 
         tvDeal.setText("");
+    }
+
+    public void test() {
+        System.out.println("MyLinearLayout here");
     }
 
 
